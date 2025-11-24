@@ -1,12 +1,12 @@
-# Serverlesspresso-Node14-to-Node22
+# Serverlesspresso-Node14-to-Node20
 
 ## Objective
 
-Upgrade the Serverlesspresso serverless coffee ordering application from Node.js 14.x to Node.js 22.x runtime, migrate AWS SDK v2 to v3, modernize Lambda function configurations, and ensure all SAM templates and application code are compatible with Node.js 22 while maintaining full functionality of the event-driven architecture including EventBridge, Cognito authentication, DynamoDB, IoT Core, and Step Functions integrations.
+Upgrade the Serverlesspresso serverless coffee ordering application from Node.js 14.x to Node.js 20.x runtime, migrate AWS SDK v2 to v3, modernize Lambda function configurations, and ensure all SAM templates and application code are compatible with Node.js 20 while maintaining full functionality of the event-driven architecture including EventBridge, Cognito authentication, DynamoDB, IoT Core, and Step Functions integrations.
 
 ## Summary
 
-This transformation systematically upgrades all Lambda functions in the Serverlesspresso application from the deprecated Node.js 14.x runtime to Node.js 22.x. The process includes updating all SAM template.yaml files to specify nodejs22.x runtime, migrating AWS SDK v2 code to v3 (since Node.js 18+ Lambda environments include SDK v3 by default), updating package.json dependencies for Node.js 22 compatibility, modernizing deprecated Node.js API usage patterns, and validating that all AWS service integrations (EventBridge, Cognito triggers, DynamoDB, IoT Core, Step Functions) continue to function correctly after the upgrade. The transformation preserves application behavior while gaining Node.js 22 performance improvements and modern JavaScript features.
+This transformation systematically upgrades all Lambda functions in the Serverlesspresso application from the deprecated Node.js 14.x runtime to Node.js 20.x. The process includes updating all SAM template.yaml files to specify nodejs20.x runtime, migrating AWS SDK v2 code to v3 (since Node.js 18+ Lambda environments include SDK v3 by default), updating package.json dependencies for Node.js 20 compatibility, modernizing deprecated Node.js API usage patterns, and validating that all AWS service integrations (EventBridge, Cognito triggers, DynamoDB, IoT Core, Step Functions) continue to function correctly after the upgrade. The transformation preserves application behavior while gaining Node.js 20 performance improvements and modern JavaScript features.
 
 ## Entry Criteria
 
@@ -16,7 +16,7 @@ This transformation systematically upgrades all Lambda functions in the Serverle
 4. The application must use EventBridge for event-driven messaging between services
 5. The application must include Cognito custom authentication flow with Lambda triggers
 6. The application must integrate with AWS IoT Core for real-time messaging
-7. The application must contain package.json files with dependencies that may need Node.js 22 compatibility updates
+7. The application must contain package.json files with dependencies that may need Node.js 20 compatibility updates
 8. The application structure must include core infrastructure directories (00-baseCore, 01-appCore) and microservices in backends/ directory
 
 ## Implementation Steps
@@ -24,10 +24,10 @@ This transformation systematically upgrades all Lambda functions in the Serverle
 1. **Update SAM Template Runtime Configurations**
    - Locate all template.yaml files in the project (00-baseCore/, 01-appCore/, backends/*/template.yaml)
    - Find all Lambda function resource definitions using AWS::Serverless::Function type
-   - Change Runtime property from "nodejs14.x" to "nodejs22.x" for every Lambda function
+   - Change Runtime property from "nodejs14.x" to "nodejs20.x" for every Lambda function
    - Verify SAM Transform version remains "AWS::Serverless-2016-10-31" (current and valid version)
    - Preserve all existing Lambda function configurations including MemorySize, Timeout, Policies, Environment variables
-   - Ensure AWS_NODEJS_CONNECTION_REUSE_ENABLED environment variable is maintained (still valid in Node.js 22)
+   - Ensure AWS_NODEJS_CONNECTION_REUSE_ENABLED environment variable is maintained (still valid in Node.js 20)
    - Validate YAML syntax remains correct after runtime changes
 
 2. **Migrate AWS SDK v2 to AWS SDK v3**
@@ -46,10 +46,10 @@ This transformation systematically upgrades all Lambda functions in the Serverle
 3. **Update Package.json Dependencies**
    - Locate all package.json files throughout the project
    - Remove or update "aws-sdk": "^2.x" from dependencies and devDependencies (not needed in Node.js 18+ Lambda)
-   - Update Node.js engine specification to "node": ">=22.0.0" if engines field exists
-   - Update nanoid package to latest version compatible with Node.js 22 (if used)
-   - Update any other npm dependencies to versions that support Node.js 22
-   - Verify no dependencies have explicit Node.js version constraints that exclude Node.js 22
+   - Update Node.js engine specification to "node": ">=20.0.0" if engines field exists
+   - Update nanoid package to latest version compatible with Node.js 20 (if used)
+   - Update any other npm dependencies to versions that support Node.js 20
+   - Verify no dependencies have explicit Node.js version constraints that exclude Node.js 20
    - Add AWS SDK v3 client packages only if code needs to be tested locally outside Lambda environment
 
 4. **Modernize Deprecated Node.js API Usage**
@@ -63,10 +63,10 @@ This transformation systematically upgrades all Lambda functions in the Serverle
 
 5. **Update Cognito Custom Authentication Lambda Triggers**
    - Review Lambda triggers in 00-baseCore/cognito-triggers/ directory (define-auth-challenge.js, create-auth-challenge.js, verify-auth-challenge-response.js, pre-sign-up.js)
-   - Update runtime references in SAM template from nodejs14.x to nodejs22.x
+   - Update runtime references in SAM template from nodejs14.x to nodejs20.x
    - Verify Cognito event object structure handling remains compatible (event.request, event.response)
-   - Ensure synchronous return pattern for Cognito triggers continues to work in Node.js 22
-   - Test custom challenge flow logic with Node.js 22 async handling
+   - Ensure synchronous return pattern for Cognito triggers continues to work in Node.js 20
+   - Test custom challenge flow logic with Node.js 20 async handling
    - Preserve all Lambda permission configurations (DefineAuthChallengeInvocationPermission, etc.)
 
 6. **Validate EventBridge Integration**
@@ -97,42 +97,42 @@ This transformation systematically upgrades all Lambda functions in the Serverle
    - Migrate Step Functions API calls from SDK v2 to v3 (StepFunctions client to SFNClient)
    - Update startExecution, stopExecution, and describeExecution calls to v3 command pattern
    - Verify state machine invocations continue to work correctly
-   - Ensure Lambda functions called by Step Functions handle Node.js 22 runtime properly
+   - Ensure Lambda functions called by Step Functions handle Node.js 20 runtime properly
    - Test workflow orchestration end-to-end after runtime upgrade
    - Validate Step Functions error handling and retry logic
 
 10. **Validate SAM Template Syntax and Build**
     - Run "sam validate" on all updated template.yaml files to check for syntax errors
-    - Execute "sam build" to compile the application with Node.js 22 runtime
+    - Execute "sam build" to compile the application with Node.js 20 runtime
     - Verify all Lambda functions build successfully without dependency errors
-    - Check for any SAM build warnings related to Node.js 22 or dependencies
+    - Check for any SAM build warnings related to Node.js 20 or dependencies
     - Ensure Lambda deployment package sizes remain within limits
     - Validate that CloudFormation nested stack references remain correct
 
 11. **Update Local Testing and Development**
-    - Update any local testing scripts to use Node.js 22
-    - Ensure local SAM CLI testing uses correct runtime (sam local invoke with --runtime nodejs22.x)
-    - Update Docker images for local Lambda testing to Node.js 22 base
+    - Update any local testing scripts to use Node.js 20
+    - Ensure local SAM CLI testing uses correct runtime (sam local invoke with --runtime nodejs20.x)
+    - Update Docker images for local Lambda testing to Node.js 20 base
     - Verify environment variable configurations for local testing
-    - Update any integration test scripts to handle Node.js 22 specific behaviors
-    - Ensure localTest.js files in code directories work with Node.js 22
+    - Update any integration test scripts to handle Node.js 20 specific behaviors
+    - Ensure localTest.js files in code directories work with Node.js 20
 
 12. **Handle API Gateway Integration**
-    - Verify Lambda proxy integration response format remains compatible with Node.js 22
+    - Verify Lambda proxy integration response format remains compatible with Node.js 20
     - Ensure CORS headers in Lambda responses continue to work correctly
     - Test API Gateway request/response transformations with upgraded Lambda functions
-    - Validate query string parameter handling in Node.js 22
+    - Validate query string parameter handling in Node.js 20
     - Check that API Gateway authorizers work correctly with Cognito integration
     - Verify error responses and status codes remain consistent
 
 ## Validation / Exit Criteria
 
-1. All template.yaml files specify "Runtime: nodejs22.x" for every Lambda function with no nodejs14.x references remaining
+1. All template.yaml files specify "Runtime: nodejs20.x" for every Lambda function with no nodejs14.x references remaining
 2. All JavaScript files successfully use AWS SDK v3 client libraries with modular imports and command pattern
 3. No "require('aws-sdk')" or "const AWS = require('aws-sdk')" statements remain in the codebase
-4. All package.json files have removed aws-sdk v2 dependencies and include only Node.js 22 compatible packages
+4. All package.json files have removed aws-sdk v2 dependencies and include only Node.js 20 compatible packages
 5. SAM validate command succeeds on all template.yaml files without errors or warnings
-6. SAM build command completes successfully for all Lambda functions using Node.js 22 runtime
+6. SAM build command completes successfully for all Lambda functions using Node.js 20 runtime
 7. All Cognito custom authentication Lambda triggers successfully authenticate users with the custom challenge flow
 8. EventBridge events are successfully published and routed to correct Lambda functions
 9. IoT Core messages are published successfully to correct topics and received by subscribed clients
@@ -140,5 +140,5 @@ This transformation systematically upgrades all Lambda functions in the Serverle
 11. Step Functions workflows start and complete successfully with all orchestrated Lambda functions
 12. API Gateway endpoints respond correctly with proper CORS headers and status codes
 13. No deprecated Node.js API warnings appear in CloudWatch Logs after deployment
-14. Application performance metrics show expected improvements from Node.js 22 optimizations
+14. Application performance metrics show expected improvements from Node.js 20 optimizations
 15. End-to-end testing of the coffee ordering workflow completes successfully from order placement through completion
