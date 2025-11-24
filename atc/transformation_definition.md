@@ -1,4 +1,4 @@
-# Serverlesspresso Node.js 14 to Node.js 22 with SAM Template Modernization
+# Serverlesspresso-Node14-to-Node22
 
 ## Objective
 
