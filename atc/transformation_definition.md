@@ -85,6 +85,20 @@ This transformation systematically upgrades all Lambda functions in the Serverle
    - Ensure Cognito Identity Pool permissions for IoT remain valid
    - Test real-time message delivery to IoT Core topics after upgrade
 
+7a. **Fix CloudFormation Custom Resource Response Handling**
+   - **Critical Fix**: Update GetIoTEndpoint.js (and any other custom resource handlers) to properly await the sendResponse() function
+   - Convert the sendResponse() function to return a Promise by wrapping the HTTPS request logic in `new Promise((resolve, reject) => {...})`
+   - In the async handler function, add `await` before all calls to sendResponse():
+     * `await sendResponse(event, context, "SUCCESS")` for Delete requests
+     * `await sendResponse(event, context, responseStatus, responseData)` for success and error cases
+   - Replace resolve/reject pattern in the HTTPS request:
+     * Call `resolve()` in the request success callback instead of `context.done()`
+     * Call `reject(error)` in the error handler instead of `context.done()`
+   - Remove deprecated `context.done()` calls (not needed with async handlers in Node.js 20)
+   - This ensures the Lambda function waits for CloudFormation to receive the custom resource response before completing execution
+   - Without this fix, the Lambda may complete before sending the response, causing CloudFormation deployment failures with "CloudFormation did not receive a response from your Custom Resource" error
+   - Verify custom resources successfully create/update/delete during CloudFormation stack operations
+
 8. **Verify DynamoDB Operations**
    - Migrate DynamoDB DocumentClient operations from SDK v2 to v3
    - Update getItem, putItem, updateItem, query, scan operations to use DynamoDBDocumentClient with v3 commands
@@ -142,3 +156,5 @@ This transformation systematically upgrades all Lambda functions in the Serverle
 13. No deprecated Node.js API warnings appear in CloudWatch Logs after deployment
 14. Application performance metrics show expected improvements from Node.js 20 optimizations
 15. End-to-end testing of the coffee ordering workflow completes successfully from order placement through completion
+16. CloudFormation custom resources (IotEndpoint) successfully create during stack deployment without timeout errors
+17. Custom resource Lambda functions properly await sendResponse() calls and CloudFormation receives responses within the timeout period
