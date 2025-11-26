@@ -2,19 +2,19 @@
  *  SPDX-License-Identifier: MIT-0
  */
 
-const AWS = require('aws-sdk')
-AWS.config.update({ region: process.env.AWS_REGION })
-const stepFunctions = new AWS.StepFunctions()
+const { SFNClient, ListExecutionsCommand } = require('@aws-sdk/client-sfn')
+const sfnClient = new SFNClient({ region: process.env.AWS_REGION })
 
 // Gets current number of running executions in state machine
 const getQueueSize = async (record) => {
   const sfnParams = {
     stateMachineArn: process.env.StateMachineArn,
-    maxResults: '1000',
+    maxResults: 1000,
     statusFilter: 'RUNNING'
   }
   console.log ({ sfnParams })
-  const sfnResult = await stepFunctions.listExecutions(sfnParams).promise()
+  const command = new ListExecutionsCommand(sfnParams)
+  const sfnResult = await sfnClient.send(command)
   return sfnResult.executions.length
 }
 

@@ -4,11 +4,13 @@
 
 'use strict'
 
-const AWS = require('aws-sdk')
-AWS.config.update({ region: process.env.AWS_REGION })
+const { SFNClient, SendTaskSuccessCommand } = require('@aws-sdk/client-sfn')
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb')
+const { DynamoDBDocumentClient, UpdateCommand } = require('@aws-sdk/lib-dynamodb')
 
-const stepFunctions = new AWS.StepFunctions()
-const documentClient = new AWS.DynamoDB.DocumentClient()
+const sfnClient = new SFNClient({ region: process.env.AWS_REGION })
+const ddbClient = new DynamoDBClient({ region: process.env.AWS_REGION })
+const documentClient = DynamoDBDocumentClient.from(ddbClient)
 const axios = require('axios')
 
 // Cache menu contents between invocations
@@ -36,7 +38,8 @@ const updateDrinkOrder = async (record) => {
     ReturnValues: "ALL_NEW"
   }
   console.log('updateDrinkOrder: ', params)
-  const result = await documentClient.update(params).promise()
+  const command = new UpdateCommand(params)
+  const result = await documentClient.send(command)
   console.log(result)
   return result
 }
@@ -48,7 +51,8 @@ const sendTaskSuccess = async(orderId, TaskToken) => {
     output: JSON.stringify({ orderId })
   }
   console.log ('sendTaskSuccess: ', { sfnParams })
-  const sfnResult = await stepFunctions.sendTaskSuccess(sfnParams).promise()
+  const command = new SendTaskSuccessCommand(sfnParams)
+  const sfnResult = await sfnClient.send(command)
   console.log('sendTaskSuccess: ', { sfnResult })
   return sfnResult
 }

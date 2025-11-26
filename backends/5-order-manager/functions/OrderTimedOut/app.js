@@ -4,9 +4,11 @@
 
 'use strict'
 
-const AWS = require('aws-sdk')
-AWS.config.update({ region: process.env.AWS_REGION })
-const documentClient = new AWS.DynamoDB.DocumentClient()
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb')
+const { DynamoDBDocumentClient, UpdateCommand } = require('@aws-sdk/lib-dynamodb')
+
+const ddbClient = new DynamoDBClient({ region: process.env.AWS_REGION })
+const documentClient = DynamoDBDocumentClient.from(ddbClient)
 
 // Returns details of a Place ID where the app has user-generated content.
 exports.handler = async (event) => {
@@ -28,5 +30,6 @@ exports.handler = async (event) => {
   }
 
   console.log(params)
-  const result = await documentClient.update(params).promise()
+  const command = new UpdateCommand(params)
+  const result = await documentClient.send(command)
 }

@@ -9,8 +9,8 @@
     "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
   }
 
- const aws = require('aws-sdk');
- const stepfunctions = new aws.StepFunctions();
+ const { SFNClient, SendTaskSuccessCommand } = require('@aws-sdk/client-sfn');
+ const stepfunctions = new SFNClient({});
 
 exports.handler = async (event, context) => {
 
@@ -34,7 +34,8 @@ exports.handler = async (event, context) => {
     }
 
     try {
-        const res = await stepfunctions.sendTaskSuccess(params).promise()
+        const command = new SendTaskSuccessCommand(params)
+        const res = await stepfunctions.send(command)
     }catch(err){
         console.error(err)
     }

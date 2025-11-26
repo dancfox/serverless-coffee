@@ -4,9 +4,8 @@
 
 'use strict'
 
-const AWS = require('aws-sdk')
-AWS.config.update({ region: process.env.AWS_REGION })
-const eventbridge = new AWS.EventBridge()
+const { EventBridgeClient, PutEventsCommand } = require('@aws-sdk/client-eventbridge')
+const eventbridgeClient = new EventBridgeClient({ region: process.env.AWS_REGION })
 
 const { nanoid } = require('nanoid')
 const axios = require('axios')
@@ -47,7 +46,8 @@ exports.handler = async (event) => {
     })
   })
 
-  const response = await eventbridge.putEvents(params).promise()
+  const command = new PutEventsCommand(params)
+  const response = await eventbridgeClient.send(command)
   console.log('EventBridge putEvents:', response)
 
   // Step 2 - Wait

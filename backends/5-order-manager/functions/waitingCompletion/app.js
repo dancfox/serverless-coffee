@@ -4,11 +4,13 @@
 
 'use strict'
 
-const AWS = require('aws-sdk')
-AWS.config.update({ region: process.env.AWS_REGION })
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb')
+const { DynamoDBDocumentClient, UpdateCommand } = require('@aws-sdk/lib-dynamodb')
+const { EventBridgeClient, PutEventsCommand } = require('@aws-sdk/client-eventbridge')
 
-const documentClient = new AWS.DynamoDB.DocumentClient()
-const eventbridge = new AWS.EventBridge()
+const ddbClient = new DynamoDBClient({ region: process.env.AWS_REGION })
+const documentClient = DynamoDBDocumentClient.from(ddbClient)
+const eventbridgeClient = new EventBridgeClient({ region: process.env.AWS_REGION })
 
 // Returns details of a Place ID where the app has user-generated content.
 exports.handler = async (event) => {
@@ -35,7 +37,8 @@ exports.handler = async (event) => {
   }
 
   console.log(params)
-  const result = await documentClient.update(params).promise()
+  const command = new UpdateCommand(params)
+  const result = await documentClient.send(command)
   console.log(result)
 
   // Publish event to EventBridge
@@ -62,6 +65,7 @@ exports.handler = async (event) => {
   }
 
   console.log('publishEvent: ', ebParams)
-  const response = await eventbridge.putEvents(ebParams).promise()
+  const ebCommand = new PutEventsCommand(ebParams)
+  const response = await eventbridgeClient.send(ebCommand)
   console.log('EventBridge putEvents:', response)
 }

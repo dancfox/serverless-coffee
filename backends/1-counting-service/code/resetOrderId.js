@@ -2,15 +2,17 @@
  *  SPDX-License-Identifier: MIT-0
  */
 
-const AWS = require('aws-sdk')
-AWS.config.update({ region: process.env.AWS_REGION })
-const documentClient = new AWS.DynamoDB.DocumentClient()
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb')
+const { DynamoDBDocumentClient, UpdateCommand } = require('@aws-sdk/lib-dynamodb')
+
+const ddbClient = new DynamoDBClient({ region: process.env.AWS_REGION })
+const documentClient = DynamoDBDocumentClient.from(ddbClient)
 
 // Reset order ID counter
 exports.handler = async (event) => {
   console.log(JSON.stringify(event, null, 2))
 
-  await documentClient.update({
+  const command = new UpdateCommand({
     TableName: process.env.TableName,
     Key: {
       PK: 'orderID'
@@ -19,5 +21,6 @@ exports.handler = async (event) => {
     ExpressionAttributeValues:{
       ":val": 0
     }
-  }).promise()
+  })
+  await documentClient.send(command)
 }

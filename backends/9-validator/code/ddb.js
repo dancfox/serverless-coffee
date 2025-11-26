@@ -2,9 +2,11 @@
  *  SPDX-License-Identifier: MIT-0
  */
 
-const AWS = require('aws-sdk')
-AWS.config.update({region: process.env.AWS_REGION})
-const documentClient = new AWS.DynamoDB.DocumentClient()
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb')
+const { DynamoDBDocumentClient, QueryCommand, PutCommand, UpdateCommand } = require('@aws-sdk/lib-dynamodb')
+
+const ddbClient = new DynamoDBClient({ region: process.env.AWS_REGION })
+const documentClient = DynamoDBDocumentClient.from(ddbClient)
 
 
 const getConfig = async (id) => {
@@ -22,7 +24,8 @@ const getConfig = async (id) => {
   console.log('getConfig params: ', params)
 
   try {
-    const result = await documentClient.query(params).promise()
+    const command = new QueryCommand(params)
+    const result = await documentClient.send(command)
     console.log('getConfig result: ', result.Items)
     return result.Items
   } catch (err) {
@@ -44,7 +47,8 @@ const getItem = async (id) => {
   console.log('getItem params: ', params)
 
   try {
-    const result = await documentClient.query(params).promise()
+    const command = new QueryCommand(params)
+    const result = await documentClient.send(command)
     console.log('getItem result: ', result)
     return result
   } catch (err) {
@@ -58,10 +62,11 @@ const saveItem = async (record) => {
     ...record
   }
   console.log(Item)
-  const result = await documentClient.put({
+  const command = new PutCommand({
     TableName: process.env.TableName,
     Item
-  }).promise()
+  })
+  const result = await documentClient.send(command)
   console.log('saveItem: ', result)
 }
 
@@ -78,7 +83,8 @@ const decrementToken = async (record) => {
     ReturnValues:"UPDATED_NEW"
   }
   console.log(params)
-  const result = await documentClient.update(params).promise()
+  const command = new UpdateCommand(params)
+  const result = await documentClient.send(command)
   console.log('decrementToken: ', result)
 }
 

@@ -2,9 +2,8 @@
  *  SPDX-License-Identifier: MIT-0
  */
 
-const AWS = require('aws-sdk')
-AWS.config.update({ region: process.env.AWS_REGION })
-const eventbridge = new AWS.EventBridge()
+const { EventBridgeClient, PutEventsCommand } = require('@aws-sdk/client-eventbridge')
+const eventbridgeClient = new EventBridgeClient({ region: process.env.AWS_REGION })
 
 const { nanoid } = require('nanoid')
 const { getItem, decrementToken } = require('./ddb')
@@ -80,7 +79,7 @@ exports.handler = async (event,context) => {
   await decrementToken(bucket)
 
   // Publish to EventBridge with new order ID
-  const response = await eventbridge.putEvents({
+  const command = new PutEventsCommand({
     Entries: [
       {
         Detail: JSON.stringify({
@@ -98,7 +97,8 @@ exports.handler = async (event,context) => {
         Time: new Date
       }
     ]
-  }).promise()
+  })
+  const response = await eventbridgeClient.send(command)
   console.log('EventBridge putEvents:', response)
 
   // Return the code

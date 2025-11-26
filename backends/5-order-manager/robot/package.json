@@ -12,10 +12,11 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "aws-sdk": "^2.1692.0"
-  },
   "dependencies": {
+    "@aws-sdk/client-sfn": "^3.712.0",
+    "@aws-sdk/client-dynamodb": "^3.712.0",
+    "@aws-sdk/lib-dynamodb": "^3.712.0",
+    "@aws-sdk/client-eventbridge": "^3.712.0",
     "axios": "^1.8.2",
     "nanoid": "^5.1.3"
   }
