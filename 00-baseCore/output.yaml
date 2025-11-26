@@ -80,7 +80,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: GetIoTEndpoint.handler
-      Runtime: nodejs14.x
+      Runtime: nodejs24.x
       CodeUri: s3://serverlesspresso-central-workshop-template/5f352d3ba76f2b06d0afc6a451d7c018
       MemorySize: 128
       Timeout: 3
@@ -315,7 +315,7 @@ Resources:
     Properties:
       CodeUri: s3://serverlesspresso-central-workshop-template/4952ed6cfe2b9da6083121d367a90bcd
       Handler: publishToIOT.handler
-      Runtime: nodejs14.x
+      Runtime: nodejs24.x
       Timeout: 3
       Environment:
         Variables:
@@ -350,7 +350,7 @@ Resources:
     Properties:
       CodeUri: s3://serverlesspresso-central-workshop-template/4952ed6cfe2b9da6083121d367a90bcd
       Handler: publishToIOTuserTopic.handler
-      Runtime: nodejs14.x
+      Runtime: nodejs24.x
       Timeout: 3
       Environment:
         Variables:
@@ -391,7 +391,7 @@ Resources:
     Properties:
       CodeUri: s3://serverlesspresso-central-workshop-template/4952ed6cfe2b9da6083121d367a90bcd
       Handler: publishToIOT.handler
-      Runtime: nodejs14.x
+      Runtime: nodejs24.x
       Timeout: 3
       Environment:
         Variables:
@@ -444,7 +444,7 @@ Resources:
     Properties:
       CodeUri: s3://serverlesspresso-central-workshop-template/1d046acb8a29b951017091a612a17b3c
       Handler: configChanged.handler
-      Runtime: nodejs14.x
+      Runtime: nodejs24.x
       Timeout: 15
       MemorySize: 128
       Environment:
@@ -512,7 +512,7 @@ Resources:
     Properties:
       CodeUri: s3://serverlesspresso-central-workshop-template/4499e700bb05e2e83c2b6a5b3f2ee2ec
       Handler: getCode.handler
-      Runtime: nodejs14.x
+      Runtime: nodejs24.x
       Timeout: 15
       MemorySize: 128
       Environment:
@@ -551,7 +551,7 @@ Resources:
     Properties:
       CodeUri: s3://serverlesspresso-central-workshop-template/4499e700bb05e2e83c2b6a5b3f2ee2ec
       Handler: verifyCode.handler
-      Runtime: nodejs14.x
+      Runtime: nodejs24.x
       Timeout: 10
       MemorySize: 128
       Environment:
@@ -624,7 +624,7 @@ Resources:
     Properties:
       CodeUri: s3://serverlesspresso-central-workshop-template/f52775053d6fd2e701dcb924bb328120
       Handler: app.handler
-      Runtime: nodejs14.x
+      Runtime: nodejs24.x
       Timeout: 15
       MemorySize: 128
       Environment:
@@ -660,7 +660,7 @@ Resources:
     Properties:
       CodeUri: s3://serverlesspresso-central-workshop-template/9d6d8e0d73867362d859d3498994ed1e
       Handler: app.handler
-      Runtime: nodejs14.x
+      Runtime: nodejs24.x
       Timeout: 15
       MemorySize: 128
       Environment:
@@ -676,7 +676,7 @@ Resources:
     Properties:
       CodeUri: s3://serverlesspresso-central-workshop-template/eeb4f2b915040fc25fe13558c56944b2
       Handler: app.handler
-      Runtime: nodejs14.x
+      Runtime: nodejs24.x
       Timeout: 20
       MemorySize: 128
   GetOrderByIdFunction:
@@ -684,7 +684,7 @@ Resources:
     Properties:
       CodeUri: s3://serverlesspresso-central-workshop-template/8c33502c44f9b6c736d0e3e4dba31258
       Handler: app.handler
-      Runtime: nodejs14.x
+      Runtime: nodejs24.x
       Timeout: 15
       MemorySize: 128
   WorkFlowStarted:
@@ -692,7 +692,7 @@ Resources:
     Properties:
       CodeUri: s3://serverlesspresso-central-workshop-template/4a022ec7293e9f833b5df0aa6eafd4a4
       Handler: app.handler
-      Runtime: nodejs14.x
+      Runtime: nodejs24.x
       Timeout: 15
       MemorySize: 128
       Environment:
@@ -708,7 +708,7 @@ Resources:
     Properties:
       CodeUri: s3://serverlesspresso-central-workshop-template/3855060f065a150c6da694ebbd20f99a
       Handler: app.handler
-      Runtime: nodejs14.x
+      Runtime: nodejs24.x
       Timeout: 15
       MemorySize: 128
       Environment:
