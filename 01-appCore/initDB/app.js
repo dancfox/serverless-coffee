@@ -50,13 +50,12 @@ function sendResponse (event, context, responseStatus, responseData) {
     console.log('RESPONSE BODY:\n', responseBody)
 
     const https = require('https')
-    const url = require('url')
 
-    const parsedUrl = url.parse(event.ResponseURL)
+    const parsedUrl = new URL(event.ResponseURL)
     const options = {
       hostname: parsedUrl.hostname,
       port: 443,
-      path: parsedUrl.path,
+      path: parsedUrl.pathname + parsedUrl.search,
       method: 'PUT',
       headers: {
         'content-type': '',
