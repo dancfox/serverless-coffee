@@ -1,0 +1,15 @@
+{
+  "name": "base-core",
+  "version": "1.0.0",
+  "description": "Base core functions",
+  "main": "GetIoTEndpoint.js",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT-0",
+  "dependencies": {
+    "@aws-sdk/client-iot": "^3.712.0"
+  }
+}

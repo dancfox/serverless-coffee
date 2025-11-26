@@ -2,36 +2,34 @@
  *  SPDX-License-Identifier: MIT-0
  */
 
-const aws = require("aws-sdk")
+const { IoTClient, DescribeEndpointCommand } = require('@aws-sdk/client-iot')
+const iotClient = new IoTClient({ region: process.env.AWS_REGION })
 
-exports.handler = function (event, context) {
+exports.handler = async function (event, context) {
   console.log("REQUEST RECEIVED:\n" + JSON.stringify(event))
 
   // For Delete requests, immediately send a SUCCESS response.
   if (event.RequestType == "Delete") {
-    sendResponse(event, context, "SUCCESS")
+    await sendResponse(event, context, "SUCCESS")
     return
   }
 
-  const iot = new aws.Iot()
-  iot.describeEndpoint({}, (err, data) => {
-    let responseData, responseStatus
-    if (err) {
-      responseStatus = "FAILED"
-      responseData = { Error: "describeEndpoint call failed" }
-      console.log(responseData.Error + ":\n", err)
-    } else {
-      responseStatus = "SUCCESS"
-      responseData = { IotEndpointAddress: data.endpointAddress }
-      console.log("response data: " + JSON.stringify(responseData))
-    }
-
-    sendResponse(event, context, responseStatus, responseData)
-  })
+  try {
+    const command = new DescribeEndpointCommand({})
+    const data = await iotClient.send(command)
+    
+    const responseData = { IotEndpointAddress: data.endpointAddress }
+    console.log("response data: " + JSON.stringify(responseData))
+    await sendResponse(event, context, "SUCCESS", responseData)
+  } catch (err) {
+    const responseData = { Error: "describeEndpoint call failed" }
+    console.log(responseData.Error + ":\n", err)
+    await sendResponse(event, context, "FAILED", responseData)
+  }
 }
 
 // Send response to the pre-signed S3 URL
-function sendResponse(event, context, responseStatus, responseData) {
+async function sendResponse(event, context, responseStatus, responseData) {
   let responseBody = JSON.stringify({
     Status: responseStatus,
     Reason: `CloudWatch Log Stream: ${context.logStreamName}`,
@@ -45,13 +43,12 @@ function sendResponse(event, context, responseStatus, responseData) {
   console.log("RESPONSE BODY:\n", responseBody)
 
   const https = require("https")
-  const url = require("url")
 
-  let parsedUrl = url.parse(event.ResponseURL)
-  let options = {
+  const parsedUrl = new URL(event.ResponseURL)
+  const options = {
     hostname: parsedUrl.hostname,
     port: 443,
-    path: parsedUrl.path,
+    path: parsedUrl.pathname + parsedUrl.search,
     method: "PUT",
     headers: {
       "content-type": "",
@@ -61,20 +58,20 @@ function sendResponse(event, context, responseStatus, responseData) {
 
   console.log("SENDING RESPONSE...\n")
 
-  const request = https.request(options, function (response) {
-    console.log("STATUS: " + response.statusCode)
-    console.log("HEADERS: " + JSON.stringify(response.headers))
-    // Tell AWS Lambda that the function execution is done
-    context.done()
-  })
+  return new Promise((resolve, reject) => {
+    const request = https.request(options, function (response) {
+      console.log("STATUS: " + response.statusCode)
+      console.log("HEADERS: " + JSON.stringify(response.headers))
+      resolve()
+    })
 
-  request.on("error", function (error) {
-    console.log("sendResponse Error:" + error)
-    // Tell AWS Lambda that the function execution is done
-    context.done()
-  })
+    request.on("error", function (error) {
+      console.log("sendResponse Error:" + error)
+      reject(error)
+    })
 
-  // write data to request body
-  request.write(responseBody)
-  request.end()
+    // write data to request body
+    request.write(responseBody)
+    request.end()
+  })
 }
