@@ -90,7 +90,7 @@ Resources:
     Type: 'AWS::Serverless::Function'
     Properties:
       Handler: GetIoTEndpoint.handler
-      Runtime: nodejs14.x
+      Runtime: nodejs24.x
       CodeUri: ./
       MemorySize: 128
       Timeout: 3
@@ -122,14 +122,14 @@ Resources:
     Properties:
       CodeUri: ./cognito-triggers/
       Handler: define-auth-challenge.handler
-      Runtime: nodejs14.x
+      Runtime: nodejs24.x
 
   CreateAuthChallenge:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./cognito-triggers/
       Handler: create-auth-challenge.handler
-      Runtime: nodejs14.x
+      Runtime: nodejs24.x
       Policies:
         - Version: "2012-10-17"
           Statement:
@@ -144,14 +144,14 @@ Resources:
     Properties:
       CodeUri: ./cognito-triggers/
       Handler: verify-auth-challenge-response.handler
-      Runtime: nodejs14.x
+      Runtime: nodejs24.x
 
   PreSignUp:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./cognito-triggers/
       Handler: pre-sign-up.handler
-      Runtime: nodejs14.x
+      Runtime: nodejs24.x
 
 ##########################################
 # Cognito Resources                      #

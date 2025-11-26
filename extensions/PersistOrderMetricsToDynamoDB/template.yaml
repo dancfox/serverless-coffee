@@ -70,7 +70,7 @@ Resources:
       Description: Publish Event Metrics for Serverlesspresso
       CodeUri: publishMetric/function/
       Handler: app.lambdaHandler
-      Runtime: nodejs16.x
+      Runtime: nodejs24.x
       Timeout: 3
 
   PublishMetricsTableConnector:
