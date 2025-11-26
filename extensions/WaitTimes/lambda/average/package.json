@@ -1,0 +1,13 @@
+{
+  "name": "wait-times-average",
+  "version": "1.0.0",
+  "description": "Calculate average wait times",
+  "main": "index.js",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.712.0",
+    "@aws-sdk/lib-dynamodb": "^3.712.0"
+  }
+}

@@ -2,9 +2,11 @@
  *  SPDX-License-Identifier: MIT-0
  */
 
-const AWS = require('aws-sdk')
-AWS.config.update({ region: process.env.AWS_REGION })
-const documentClient = new AWS.DynamoDB()
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb')
+const { DynamoDBDocumentClient, BatchWriteCommand } = require('@aws-sdk/lib-dynamodb')
+
+const client = new DynamoDBClient({ region: process.env.AWS_REGION })
+const documentClient = DynamoDBDocumentClient.from(client)
 
 const configTableName = process.env.configTable
 const countingTableName = process.env.countingTable
@@ -47,7 +49,7 @@ initCountingState.map((d) => {
 const initMenu = async () => {
   try {
     console.log('params',JSON.stringify(params,null,0))
-    const result = await documentClient.batchWriteItem(params).promise()
+    const result = await documentClient.send(new BatchWriteCommand(params))
     console.log('initMenus result: ', result)
   } catch (err) {
     console.error('initMenus error: ', err)

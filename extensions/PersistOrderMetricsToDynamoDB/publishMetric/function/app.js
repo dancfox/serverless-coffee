@@ -1,5 +1,8 @@
-const dynamodb = require('aws-sdk/clients/dynamodb');
-const docClient = new dynamodb.DocumentClient();
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
+const { DynamoDBDocumentClient, TransactWriteCommand } = require('@aws-sdk/lib-dynamodb');
+
+const client = new DynamoDBClient({});
+const docClient = DynamoDBDocumentClient.from(client);
 
 
 exports.lambdaHandler = async (event) => {
@@ -52,7 +55,7 @@ exports.lambdaHandler = async (event) => {
         ]
     }
     try {
-        await docClient.transactWrite(transactParams).promise()
+        await docClient.send(new TransactWriteCommand(transactParams))
     }
     catch(e) {
         console.log(e)

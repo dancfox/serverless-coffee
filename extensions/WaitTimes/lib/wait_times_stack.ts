@@ -92,7 +92,7 @@ export class WaitTimesStack extends Stack {
 
 
     const calculateAvgFunction = new lambda.Function(this, 'Function', {
-      runtime: lambda.Runtime.NODEJS_16_X,
+      runtime: lambda.Runtime.NODEJS_24_X,
       handler: 'index.handler',
       code: lambda.Code.fromAsset('lambda/average'),
       environment: {

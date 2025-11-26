@@ -1,5 +1,8 @@
-const AWS = require('aws-sdk');
-const dynamoDb = new AWS.DynamoDB.DocumentClient();
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
+const { DynamoDBDocumentClient, GetCommand, QueryCommand } = require('@aws-sdk/lib-dynamodb');
+
+const client = new DynamoDBClient({});
+const dynamoDb = DynamoDBDocumentClient.from(client);
 
 const getDrinkByOrderId = async (orderId) => {
     const params = {
@@ -12,7 +15,7 @@ const getDrinkByOrderId = async (orderId) => {
     console.log('getDrinkByOrderId params: ', params)
 
     try {
-        const result = await dynamoDb.get(params).promise();
+        const result = await dynamoDb.send(new GetCommand(params));
         console.log('result: ', result.Item)
         return result.Item.drink;
     } catch (err) {
@@ -35,7 +38,7 @@ const getAllOrderByDrink = async (drink) => {
     console.log('getDrinkByOrderId params: ', params)
 
     try {
-        const result = await dynamoDb.query(params).promise();
+        const result = await dynamoDb.send(new QueryCommand(params));
         return result.Items;
     } catch (err) {
         console.error('getItem error: ', err)

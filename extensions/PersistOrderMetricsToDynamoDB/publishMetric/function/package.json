@@ -10,6 +10,8 @@
   "author": "SAM CLI",
   "license": "MIT",
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.712.0",
+    "@aws-sdk/lib-dynamodb": "^3.712.0",
     "axios": "^1.8.2"
   },
   "scripts": {
