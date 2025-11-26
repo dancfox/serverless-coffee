@@ -12,8 +12,7 @@
   "keywords": [],
   "author": "James Beswick",
   "license": "MIT-0",
-  "devDependencies": {
-    "aws-sdk": "^2.1692.0"
-  },
-  "dependencies": {}
+  "dependencies": {
+    "@aws-sdk/client-eventbridge": "^3.712.0"
+  }
 }

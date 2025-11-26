@@ -15,7 +15,7 @@
   "keywords": [],
   "author": "James Beswick",
   "license": "MIT-0",
-  "devDependencies": {
-    "aws-sdk": "^2.1692.0"
+  "dependencies": {
+    "@aws-sdk/client-cloudwatch": "^3.712.0"
   }
 }

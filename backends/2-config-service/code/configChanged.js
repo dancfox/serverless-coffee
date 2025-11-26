@@ -4,10 +4,8 @@
 
 'use strict'
 
-const AWS = require('aws-sdk')
-AWS.config.update({ region: process.env.AWS_REGION })
-const documentClient = new AWS.DynamoDB.DocumentClient()
-const eventbridge = new AWS.EventBridge()
+const { EventBridgeClient, PutEventsCommand } = require('@aws-sdk/client-eventbridge')
+const eventbridgeClient = new EventBridgeClient({ region: process.env.AWS_REGION })
 
 // Returns application config
 exports.handler = async (event) => {
@@ -22,12 +20,13 @@ exports.handler = async (event) => {
         DetailType: 'ConfigService.ConfigChanged',
         EventBusName: process.env.EventBusName,
         Source: process.env.Source,
-        Time: new Date
+        Time: new Date()
       }
     ]
   }
 
   console.log('Event: ', JSON.stringify(params, null, 0))
-  const response = await eventbridge.putEvents(params).promise()
+  const command = new PutEventsCommand(params)
+  const response = await eventbridgeClient.send(command)
   console.log('EventBridge putEvents:', response)
 }
