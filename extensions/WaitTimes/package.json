@@ -1,6 +1,9 @@
 {
   "name": "wait_times",
   "version": "0.1.0",
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "bin": {
     "wait_times": "bin/wait_times.js"
   },

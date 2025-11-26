@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "getCode.js",
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "dependencies": {
     "nanoid": "^5.1.3"
   },
